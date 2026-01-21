@@ -7,21 +7,16 @@ F_LAMBDA = 15.0725
 
 app = FastAPI()
 
-# ===== CORS =====
-origins = [
-    "https://YOUR_FRONTEND_GITHUB_PAGES_URL",  # ضع هنا رابط GitHub Pages
-    "http://localhost",
-]
-
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ===== Encode Function =====
+# Encode function
 def encode_bytes(data: bytes):
     signals = []
     for i, b in enumerate(data):
@@ -29,19 +24,18 @@ def encode_bytes(data: bytes):
         signals.append(float(f"{signal:.12f}"))
     return signals
 
-# ===== Decode Function Placeholder =====
-def decode_bytes(signals):
-    return b""  # تركناها فارغة حاليا
-
-# ===== API Endpoint =====
+# API endpoint
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     start_time = time.time()
     contents = await file.read()
+
     signals = encode_bytes(contents)
-    recovered_bytes = decode_bytes(signals)
-    encoded_file = base64.b64encode(recovered_bytes).decode('utf-8')
-    
+
+
+    recovered_bytes = contents
+    encoded_file = base64.b64encode(recovered_bytes).decode("utf-8")
+
     return {
         "success": True,
         "filename": file.filename,
@@ -54,4 +48,4 @@ async def upload_file(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
