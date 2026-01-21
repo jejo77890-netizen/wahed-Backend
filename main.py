@@ -7,14 +7,16 @@ F_LAMBDA = 15.0725
 
 app = FastAPI()
 
+@app.get("/")
+def home():
+    return {"status": "Backend is running"}
+
 # CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(...)
+
+# functions
+
+# @app.post("/upload")
 
 # Encode function
 def encode_bytes(data: bytes):
